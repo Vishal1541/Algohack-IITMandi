@@ -12,6 +12,7 @@ const authMiddleware = require('./middleware/auth_middleware');
 const authRoute = require('./routes/auth');
 const normalRoute = require('./routes/normal');
 const contestRoute = require('./routes/contest');
+const v1Apis = require('./routes/v1');
 
 const users = require('./models/users');
 
@@ -113,6 +114,7 @@ app.get('/api/local', (req, res, next) => {
 app.use('/api/auth', authRoute);
 app.use('/api/normal', normalRoute);
 app.use('/api/contest', authMiddleware, contestRoute);
+app.use('/api/v1', v1Apis);
 
 // Handle production
 if (process.env.NODE_ENV === 'production') {

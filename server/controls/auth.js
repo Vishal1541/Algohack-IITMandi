@@ -32,7 +32,6 @@ Hi ${name},<br><br>
 
 Regards,<br>
 Vishal Anand<br>
-7807104136<br>
 `
   };
 

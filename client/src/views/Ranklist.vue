@@ -2,17 +2,16 @@
   <div>
     <Header />
     <div>
-      <div v-if="is_before_contest === null">
+      <div v-if="current_contest_status === null">
         <b-spinner variant="primary"></b-spinner>
       </div>
-      <div v-if="is_before_contest === true">
+      <div v-if="current_contest_status === ContestStatus.NOT_STARTED">
         <center>
-          <h3>
-            Contest not yet started
-          </h3>
+          <h3>Contest not yet started</h3>
         </center>
       </div>
-      <div v-if="is_before_contest === false">
+      <div v-if="current_contest_status === ContestStatus.RUNNING
+        || current_contest_status === ContestStatus.ENDED">
         <b-col sm="10" offset="1">
           <div v-if="table_loaded" class="table-ranklist">
             <center>
@@ -26,8 +25,10 @@
               bordered
               small
             >
-              <template v-for="(qID, index) in quesIDs"
-              v-slot:[`cell(${qID})`]="data">
+              <template
+                v-for="(qID, index) in quesIDs"
+                v-slot:[`cell(${qID})`]="data"
+              >
                 <span :key="index">
                   <center v-html="qIDCols(data.item[qID])"></center>
                 </span>
@@ -59,7 +60,12 @@ export default {
       quesIDs: [],
       ranklist: [],
       contest_settings: null,
-      is_before_contest: null,
+      current_contest_status: null,
+      ContestStatus: {
+        NOT_STARTED : "NOT_STARTED",
+        RUNNING : "RUNNING",
+        ENDED : "ENDED",
+      },
       fields: ['rank', 'name', 'penalty', 'totalScore']
     }
   },
@@ -128,63 +134,58 @@ export default {
           }
         }
       }
-    },
-    isBeforeContest() {
-      const contest_start_dt = new Date(this.contest_settings.startDateTime).getTime();
-      const curr_dt = new Date().getTime();
-      return curr_dt < contest_start_dt;
     }
   },
   async mounted() {
+    this.current_contest_status =
+      (await axios.get('/api/v1/public/fetch-contest-status')).data.contestStatus;
     await this.updateUserSession();
     this.id = this.$store.state.user._id;
     if (this.id)
       await this.getUserData();
     await this.getContestSettings();
-    if (this.isBeforeContest()) {
-      this.is_before_contest = true;
-    } else {
-      this.is_before_contest = false;
-      await axios.get('/api/normal/all-users')
-        .then(async (res_users) => {
-          this.users = res_users.data;
-          await axios.get('/api/normal/all-problems')
-            .then((res_problems) => {
-              this.problems = res_problems.data;
-            })
-        })
-      this.problems.forEach(problem => {
-        this.fields.push(problem.qID);
-        this.quesIDs.push(problem.qID);
-      });
-      this.users.forEach(user => {
-        var obj = {
-          name: user.name,
-          penalty: user.totalPenalty,
-          totalScore: user.totalScore
-        };
-        user.quesAttempts.forEach(quesAttempt => {
-          obj[quesAttempt.qID] = quesAttempt;
-          obj[quesAttempt.qID]['quesScore'] = 0;
-          if (quesAttempt.hasSolved) {
-            var ques_points = parseInt(this.search(quesAttempt.qID, this.problems).points);
-            for (var i = 0; i < quesAttempt.wrongAttemptsCount; i++) {
-              ques_points = parseInt(ques_points * this.contest_settings.pointReductionConstant);
-            }
-            if (quesAttempt.hasHintTaken)
-              ques_points = parseInt(ques_points * 0.5);
-            ques_points = Math.max(1, ques_points);
-            obj[quesAttempt.qID]['quesScore'] = ques_points;
-          }
-        });
-        if (this.user_data && this.user_data.username === user.username)
-          obj.self = true;
-        this.ranklist.push(obj);
-      });
-      this.ranklist.sort(this.cmp);
-      this.updateRank();
-      this.table_loaded = true;
+    if (this.current_contest_status === this.ContestStatus.NOT_STARTED) {
+      return;
     }
+    await axios.get('/api/normal/all-users')
+      .then(async (res_users) => {
+        this.users = res_users.data;
+        await axios.get('/api/normal/all-problems')
+          .then((res_problems) => {
+            this.problems = res_problems.data;
+          })
+      })
+    this.problems.forEach(problem => {
+      this.fields.push(problem.qID);
+      this.quesIDs.push(problem.qID);
+    });
+    this.users.forEach(user => {
+      var obj = {
+        name: user.name,
+        penalty: user.totalPenalty,
+        totalScore: user.totalScore
+      };
+      user.quesAttempts.forEach(quesAttempt => {
+        obj[quesAttempt.qID] = quesAttempt;
+        obj[quesAttempt.qID]['quesScore'] = 0;
+        if (quesAttempt.hasSolved) {
+          var ques_points = parseInt(this.search(quesAttempt.qID, this.problems).points);
+          for (var i = 0; i < quesAttempt.wrongAttemptsCount; i++) {
+            ques_points = parseInt(ques_points * this.contest_settings.pointReductionConstant);
+          }
+          if (quesAttempt.hasHintTaken)
+            ques_points = parseInt(ques_points * 0.5);
+          ques_points = Math.max(1, ques_points);
+          obj[quesAttempt.qID]['quesScore'] = ques_points;
+        }
+      });
+      if (this.user_data && this.user_data.username === user.username)
+        obj.self = true;
+      this.ranklist.push(obj);
+    });
+    this.ranklist.sort(this.cmp);
+    this.updateRank();
+    this.table_loaded = true;
   }
 }
 </script>
