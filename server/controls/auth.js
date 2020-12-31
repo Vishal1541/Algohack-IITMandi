@@ -131,7 +131,7 @@ exports.logout = async (req, res) => {
 }
 
 exports.userData = async (req, res) => {
-  users.findOne({ _id: req.session.passport.user })
+  await users.findOne({ _id: req.session.passport.user })
     .then((user) => {
       res.send(user);
     })

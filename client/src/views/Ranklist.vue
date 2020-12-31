@@ -54,7 +54,7 @@ export default {
     return {
       id: null,
       table_loaded: false,
-      user_data: null,
+      user_metadata: null,
       users: [],
       problems: [],
       quesIDs: [],
@@ -84,12 +84,6 @@ export default {
     rowClass(item, type) {
       if (!item || type !== 'row') return
       if (item.self === true) return 'table-success'
-    },
-    async getUserData() {
-      await axios.get('/api/auth/user-data')
-        .then((res) => {
-          this.user_data = res.data;
-        })
     },
     async getContestSettings() {
       await axios.get('/api/normal/contest-settings')
@@ -141,8 +135,9 @@ export default {
       (await axios.get('/api/v1/public/fetch-contest-status')).data.contestStatus;
     await this.updateUserSession();
     this.id = this.$store.state.user._id;
-    if (this.id)
-      await this.getUserData();
+    if (this.id) {
+      this.user_metadata = (await axios.get('/api/v1/public/fetch-user-metadata')).data;
+    }
     await this.getContestSettings();
     if (this.current_contest_status === this.ContestStatus.NOT_STARTED) {
       return;
@@ -179,7 +174,7 @@ export default {
           obj[quesAttempt.qID]['quesScore'] = ques_points;
         }
       });
-      if (this.user_data && this.user_data.username === user.username)
+      if (this.user_metadata && this.user_metadata.username === user.username)
         obj.self = true;
       this.ranklist.push(obj);
     });
