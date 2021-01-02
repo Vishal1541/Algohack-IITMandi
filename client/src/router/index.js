@@ -5,8 +5,11 @@ import Register from "@/views/Register.vue"
 import Verify from "@/views/Verify.vue"
 import Login from "@/views/Login.vue"
 import Registered from "@/views/Registered.vue"
-import Contest from "@/views/Contest.vue"
+import ContestMain from "@/views/ContestMain.vue"
 import Ranklist from "@/views/Ranklist.vue"
+
+// Will @deprecate soon.
+import Contest from "@/views/Contest.vue"
 
 Vue.use(Router);
 
@@ -24,6 +27,12 @@ const routes = [
   {
     path: "/contest",
     name: "Contest",
+    component: ContestMain
+  },
+  // Will @deprecate soon.
+  {
+    path: "/contest-old",
+    name: "ContestOld",
     component: Contest
   },
   {
