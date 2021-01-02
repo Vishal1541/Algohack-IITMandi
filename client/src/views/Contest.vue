@@ -11,13 +11,7 @@
     <div v-else-if="contest_phase === 0" class="running-contest">
       <div v-if="user_data !== null">
         <b-container>
-          <UserNav
-            :userData="user_data"
-            :HH="left_h"
-            :MM="left_m"
-            :SS="left_s"
-            :contest_settings="contest_settings"
-          />
+          <UserNav/>
         </b-container>
         <b-alert
           v-model="time_updated_alert"

@@ -13,9 +13,6 @@ exports.Constants = {
     "MIN_SCORABLE_POINTS_PER_QUES": 1,
 }
 
-var allProblemsMetadata = [];
-var contestSettings = null;
-
 exports.fetchContestSettings = async () => {
     var contestSetting = null;
     await contestModel.findOne({})
@@ -113,4 +110,14 @@ exports.addRankToOrderedRanklist = async (ranklist) => {
         }
     }
     return ranklist;
+}
+
+exports.findUserTotalHintsTaken = async (quesAttempts) => {
+    var totalHintsTaken = 0;
+    quesAttempts.forEach(quesAttempt => {
+        if (quesAttempt.hasHintTaken) {
+            totalHintsTaken++;
+        }
+    });
+    return totalHintsTaken;
 }
