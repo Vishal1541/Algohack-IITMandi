@@ -3,23 +3,10 @@ var contestModel = require('../models/contest');
 var problemsModel = require('../models/problems');
 var helperFunctions = require('./helper');
 
-const AlgohackConstants = helperFunctions.Constants;
-
 exports.fetchContestStatus = async (req, res) => {
     const contestSettings = await helperFunctions.fetchContestSettings();
-    const CURRENT_TIME = new Date();
-    const CONTEST_START_TIME = new Date(contestSettings.startDateTime);
-    const CONTEST_END_TIME = new Date(contestSettings.endDateTime);
-
-    if (CURRENT_TIME < CONTEST_START_TIME) {
-        return res.send({ contestStatus: AlgohackConstants.ContestStatusEnum.NOT_STARTED });
-    }
-
-    if (CURRENT_TIME > CONTEST_END_TIME) {
-        return res.send({ contestStatus: AlgohackConstants.ContestStatusEnum.ENDED });
-    }
-
-    return res.send({ contestStatus: AlgohackConstants.ContestStatusEnum.RUNNING });
+    const contestStatus = await helperFunctions.fetchContestCurrentStatus(contestSettings);
+    return res.send({ contestStatus: contestStatus });
 }
 
 exports.fetchUserMetadata = async (req, res) => {

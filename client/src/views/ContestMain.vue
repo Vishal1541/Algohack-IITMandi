@@ -21,9 +21,12 @@
       class="running-contest"
     >
       <UserNav />
-      // Problem Table
+      <b-row style="margin-top: 40px">
+        <b-col cols="6" offset="3">
+          <ProblemsTable />
+        </b-col>
+      </b-row>
     </div>
-    {{ current_contest_status }}
   </div>
 </template>
 
@@ -33,11 +36,13 @@ import router from "../router";
 import { mapActions } from "vuex";
 import Header from "../views/Header.vue";
 import UserNav from "../components/UserNav.vue";
+import ProblemsTable from "../components/ProblemsTable";
 
 export default {
   components: {
     Header,
     UserNav,
+    ProblemsTable,
   },
   data() {
     return {

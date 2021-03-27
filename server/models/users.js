@@ -5,6 +5,7 @@ var users = new mongoose.Schema({
   username: String,
   password: String,
   isVerified: Boolean,
+  isAdmin: Boolean,
   verificationUri: String,
   registeredAt: Date,
   totalScore: Number,

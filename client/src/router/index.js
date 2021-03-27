@@ -6,6 +6,7 @@ import Verify from "@/views/Verify.vue"
 import Login from "@/views/Login.vue"
 import Registered from "@/views/Registered.vue"
 import ContestMain from "@/views/ContestMain.vue"
+import Problem from "@/views/Problem.vue"
 import Ranklist from "@/views/Ranklist.vue"
 
 // Will @deprecate soon.
@@ -28,6 +29,12 @@ const routes = [
     path: "/contest",
     name: "Contest",
     component: ContestMain
+  },
+  {
+    path: "/contest/problem/:qID",
+    name: "Problem",
+    component: Problem,
+    props: true
   },
   // Will @deprecate soon.
   {

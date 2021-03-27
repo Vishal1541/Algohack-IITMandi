@@ -67,7 +67,7 @@ export default {
           router.push('/contest');
         })
         .catch(() => {
-          this.message = 'Invalid roll number/ password'
+          this.message = 'Invalid roll number/ password/ email not verified'
         })
       this.submitted = false;
     },

@@ -28,10 +28,10 @@ sendVerificationEmail = async (name, roll_no, link) => {
     html: `
 Hi ${name},<br><br>
 
-  <emsp>Click <a href="https://algohack-iitmandi.herokuapp.com/${link}">HERE</a> to verify your email for AlgoHack.<br><br>
+  <emsp>Click <a href="https://algohack-iitmandi.herokuapp.com/${link}">HERE</a> to verify your email for AlgoHack.<br>
+  For any queries, reach out to the Algohack team.<br><br>
 
 Regards,<br>
-Vishal Anand<br>
 `
   };
 
@@ -47,6 +47,7 @@ Vishal Anand<br>
 exports.register = async (req, res) => {
   var data = req.body;
   var msg = '';
+  data.username = data.username.toLowerCase();
   if (data.name.length === 0) {
     msg = "Name cannot be empty";
   }
@@ -59,7 +60,6 @@ exports.register = async (req, res) => {
   if (msg.length !== 0) {
     return res.send(msg);
   } else {
-    data.username = data.username.toLowerCase();
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const token = await bcrypt.hash(data.name + data.username, 5);
@@ -75,7 +75,8 @@ exports.register = async (req, res) => {
       registeredAt: null,
       totalScore: 0,
       totalPenalty: 0,
-      quesAttempts: []
+      quesAttempts: [],
+      isAdmin: false
     });
     await users.countDocuments({ username: data.username })
       .then(async (cnt) => {
