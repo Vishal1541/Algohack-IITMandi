@@ -5,7 +5,7 @@
         <b-nav-item @click="home" class="nav-link">&lt;Home /&gt;</b-nav-item>
         <b-nav-item v-if="id === null" @click="login" class="nav-link">&lt;Login /&gt;</b-nav-item>
         <b-nav-item v-if="id === null" @click="register" class="nav-link">&lt;Register /&gt;</b-nav-item>
-        <b-nav-item v-if="id !== null" @click="contest" class="nav-link">&lt;Past Contest /&gt;</b-nav-item>
+        <b-nav-item v-if="id !== null" @click="contest" class="nav-link">&lt;Contest /&gt;</b-nav-item>
         <b-nav-item @click="ranklist" class="nav-link">&lt;Ranklist /&gt;</b-nav-item>
         <b-nav-item
           @click="registeredParticipants"

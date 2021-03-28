@@ -20,7 +20,7 @@
         <b-col sm="10" offset="1">
           <div class="table-ranklist">
             <center>
-              <h3>Ranklist (freezed)</h3>
+              <h3>Ranklist</h3>
             </center>
             <b-table
               :items="ranklist"
