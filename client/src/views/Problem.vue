@@ -325,7 +325,7 @@ export default {
       location.reload();
     },
     getProblemsTabClass(i) {
-      if (i === 0 || !this.problems_tab[i].hasSolved) {
+      if (!this.problems_tab[i].hasSolved) {
         return "problem-badge";
       }
       return "problem-hacked-badge";
