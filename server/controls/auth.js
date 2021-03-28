@@ -28,7 +28,7 @@ sendVerificationEmail = async (name, roll_no, link) => {
     html: `
 Hi ${name},<br><br>
 
-  <emsp>Click <a href="https://algohack-iitmandi.herokuapp.com/${link}">HERE</a> to verify your email for AlgoHack.<br>
+  <emsp>Click <a href="https://algohack-iitmandi-2021.herokuapp.com/${link}">HERE</a> to verify your email for AlgoHack.<br>
   For any queries, reach out to the Algohack team.<br><br>
 
 Regards,<br>
